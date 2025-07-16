@@ -1,0 +1,6 @@
+@BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO_HostAddress = http://localhost:5244
+
+GET {{BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
