@@ -2,7 +2,7 @@
 {
     public class Competidor
     {
-        int Id_Usuario { get; set; }
-        int Id_Persona { get; set; }
+        public int Id_Usuario { get; set; }
+        public int Id_Persona { get; set; }
     }
 }

@@ -2,12 +2,12 @@
 {
     public class Usuario
     {
-        int Id_User { get; set; }
-        string Email { get; set; }
-        string Password { get; set; }
-        DateTime Fecha_Registro { get; set; }
-        bool Estado { get; set; }
-        int Id_Rol { get; set; }
+        public int Id_User;
+        public string Email;
+        public string Password;
+        public DateTime Fecha_Registro { get; set; }
+        public bool Estado { get; set; }
+        public int Id_Rol { get; set; }
 
     }
 }

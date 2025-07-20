@@ -1,5 +1,5 @@
 ﻿using System.Data.Common;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
 {
@@ -7,19 +7,19 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
     {
         private readonly string _CadenaConexion;
 
-        public DbConnectionFactory(IConfiguration configuracion)
+        public DbConnectionFactory( )
         {
-            _CadenaConexion = configuracion.GetConnectionString("DefaultConnection");
+            _CadenaConexion = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("ConnectionStrings")["DefaultConnection"];
         }
 
-        public DbConnection CrearConexion()
+        public MySqlConnection CrearConexion()
         {
             if (string.IsNullOrEmpty(_CadenaConexion))
             {
                 throw new InvalidOperationException("La cadena de conexión no está configurada.");
             }
 
-            var conexion = new SqlConnection(_CadenaConexion);
+            MySqlConnection conexion = new MySqlConnection(_CadenaConexion);
             conexion.Open();
             return conexion;
         }
