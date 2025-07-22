@@ -1,5 +1,6 @@
 
 using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data;
+using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Services;
 
 namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO
 {
@@ -15,6 +16,9 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<ServCompetidor>();
+            builder.Services.AddScoped<DaoCompetidor>();
+            builder.Services.AddScoped<DbConnectionFactory>();
 
             var app = builder.Build();
 

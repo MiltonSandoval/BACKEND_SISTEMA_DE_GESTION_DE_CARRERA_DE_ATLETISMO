@@ -6,7 +6,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
 {
     public class DaoUsuario
     {
-        public async Task<bool> CrearUsuarioAsync(Usuario usuario)
+        public static async Task<bool> CrearUsuarioAsync(Usuario usuario)
         {
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
             await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
@@ -54,6 +54,33 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
                 }
             }
             return null;
+        }
+
+        public static async Task<int> ObtenerIdUsuarioPorEmail(string Correo)
+        {
+            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
+            await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
+            {
+                string query = "SELECT * FROM USUARIO WHERE EMAIL_USER = @correo";
+
+                await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@correo", Correo);
+                    cmd.ExecuteNonQuery();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            Usuario usuario = new Usuario();
+
+                            usuario.Id_User = int.Parse(reader["ID_USER"].ToString());
+                            
+                            return usuario.Id_User;
+                        }
+                    }
+                }
+            }
+            return -1;
         }
 
         static async Task<Usuario> ObtenerUsuarioPorCorreoYContraAsync(string Correo, string Contra)

@@ -6,7 +6,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Mapper
     public class MapPerfilUsuario
     {
 
-        static Persona ObtenerPersonaDelDto(DtoPerilUsuario perfilusuario)
+        public static Persona ObtenerPersonaDelDtoRegistro(DtoRegistroUsuario perfilusuario)
         {
             Persona persona = new Persona();
             persona.Nombre = perfilusuario.Nombre;
@@ -18,29 +18,15 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Mapper
             persona.Nacionalidad = perfilusuario.Nacionalidad;
             return persona;
         }
-        static Usuario ObtenerUsuarioDelDto(DtoPerilUsuario perfilusuario)
+        public static Usuario ObtenerUsuarioDelDtoRegistro(DtoRegistroUsuario perfilusuario)
         {
             Usuario usuario = new Usuario(); 
             usuario.Email = perfilusuario.Email;
             usuario.Password = perfilusuario.Password;
-            usuario.Fecha_Registro = perfilusuario.Fecha_Registro;
+
             return usuario;
         }
 
-        static DtoPerilUsuario GenerarDtoPerfil(Persona persona, Usuario usuario)
-        {
-            return new DtoPerilUsuario(
-                persona.Nombre,
-                persona.Apellidos,
-                persona.Fecha_Nacimiento,
-                persona.Documento_Identidad,
-                persona.Telefono,
-                persona.Genero,
-                persona.Nacionalidad,
-                usuario.Email,
-                usuario.Password,
-                usuario.Fecha_Registro
-            );
-        }
+        
     }
 }
