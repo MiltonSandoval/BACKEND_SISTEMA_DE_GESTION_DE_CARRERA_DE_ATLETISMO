@@ -2,8 +2,9 @@
 {
     public class Administrador
     {
-        int Id_Usuario { get; set; }
-        int Id_Persona { get; set; }
+        public int Id_Administrador { get; set; }
+        public int Id_Usuario { get; set; }
+        public int Id_Persona { get; set; }
 
     }
 }

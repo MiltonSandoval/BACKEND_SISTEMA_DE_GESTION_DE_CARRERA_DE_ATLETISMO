@@ -2,7 +2,8 @@
 {
     public class Organizador
     {
-        int Id_Usuario { get; set; }
-        int Id_Persona { get; set; }
+        public int Id_Organizador { get; set; }
+        public int Id_Usuario { get; set; }
+        public int Id_Persona { get; set; }
     }
 }

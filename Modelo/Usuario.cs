@@ -2,9 +2,9 @@
 {
     public class Usuario
     {
-        public int Id_User;
-        public string Email;
-        public string Password;
+        public int Id_User { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
         public DateTime Fecha_Registro { get; set; }
         public bool Estado { get; set; }
         public int Id_Rol { get; set; }

@@ -5,7 +5,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
 {
     public class DaoPersona
     {
-        public async Task<bool> CrearPersonaAsync(Persona persona)
+        public static async Task<bool> CrearPersonaAsync(Persona persona)
         {
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
             await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
@@ -24,7 +24,31 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
                 }
             }
         }
-        static async Task<bool> CambiarAlgoDePersona(int id_persona, Task cambio, int elemento)
+        public static async Task<int> ObtenerIdPersonaPorDocumentoAsyn(string Documento)
+        {
+            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
+            await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
+            {
+                string query = "SELECT ID_PERSONA FROM PERSONA WHERE DOCUMENTO_IDENTIDAD = @documento";
+
+                await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@documento", Documento);
+                    cmd.ExecuteNonQuery();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return int.Parse(reader["ID_PERSONA"].ToString());
+                        }
+
+                    }
+                    return -1; // Retorna -1 si no se encuentra la persona
+                }
+            }
+        }
+        
+        public static async Task<bool> CambiarAlgoDePersona(int id_persona, Task cambio, int elemento)
         {
             List<string> Columnas = new List<string>();
             Columnas.Add("NOMBRE");
@@ -46,7 +70,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
             }
         }
 
-        static async Task<Persona> ObtenerPersonaPorIdAsync(int idPersona)
+        public static async Task<Persona> ObtenerPersonaPorIdAsync(int idPersona)
         {
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
             await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
@@ -79,7 +103,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
             }
             return null;
         }
-        static async Task<bool> EliminarPersonaAsync(int idPersona)
+        public static async Task<bool> EliminarPersonaAsync(int idPersona)
         {
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
             await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
