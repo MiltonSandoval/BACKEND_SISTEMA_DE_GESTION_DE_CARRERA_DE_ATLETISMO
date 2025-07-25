@@ -19,6 +19,8 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO
             builder.Services.AddScoped<ServCompetidor>();
             builder.Services.AddScoped<DaoCompetidor>();
             builder.Services.AddScoped<DbConnectionFactory>();
+            builder.Services.AddScoped<SerClub>();
+
 
             var app = builder.Build();
 

@@ -47,62 +47,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
                 }
             }
         }
-        
-        public static async Task<bool> CambiarAlgoDePersona(int id_persona, Task cambio, int elemento)
-        {
-            List<string> Columnas = new List<string>();
-            Columnas.Add("NOMBRE");
-            Columnas.Add("APELLIDOS");
-            Columnas.Add("FECHA_NACIMIENTO");
-            Columnas.Add("TELEFONO");
-            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
 
-            await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
-            {
-                string query = $"UPDATE PERSONA SET {Columnas[elemento]} = @cambio WHERE ID_USER = @idUsuario";
-
-                await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
-                {
-                    cmd.Parameters.AddWithValue("@cambio", cambio);
-
-                    return (cmd.ExecuteNonQuery() > 0);
-                }
-            }
-        }
-
-        public static async Task<Persona> ObtenerPersonaPorIdAsync(int idPersona)
-        {
-            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
-            await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
-            {
-                string query = "SELECT * FROM PERSONA WHERE ID_PERSONA = @persona";
-
-                await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
-                {
-                    cmd.Parameters.AddWithValue("@persona", idPersona);
-                    cmd.ExecuteNonQuery();
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            Persona persona = new Persona();
-
-                            persona.Id_Persona = int.Parse(reader["ID_PERSONA"].ToString());
-                            persona.Nombre = reader["NOMBRE"].ToString();
-                            persona.Apellidos = reader["APELLIDOS"].ToString();
-                            persona.Fecha_Nacimiento = DateTime.Parse(reader["FECHA_NACIMIENTO"].ToString());
-                            persona.Documento_Identidad = reader["DOCUMENTO_IDENTIDAD"].ToString();
-                            persona.Telefono = reader["TELEFONO"].ToString();
-                            persona.Genero = reader["GENERO"].ToString();
-                            persona.Nacionalidad = reader["NACIONALIDAD"].ToString();
-
-                            return persona;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
         public static async Task<bool> EliminarPersonaAsync(int idPersona)
         {
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
@@ -115,6 +60,27 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
                     cmd.Parameters.AddWithValue("@persona", idPersona);
                     return (cmd.ExecuteNonQuery() > 0);
                 }
+            }
+        }
+
+        public static async Task<bool> ActualizarPersona(Persona persona)
+        {
+            DbConnectionFactory dbConnFactory = new DbConnectionFactory();
+            await using (MySqlConnection conexion = dbConnFactory.CrearConexion())
+            {
+                string query = ("UPDateTime Persona \r\n SET Nombre = @nombre, Apellidos = @apellidos, Telefono = @telefono, FECHA_NACIMIENTO = @fecha_nacimiento \r\nWHERE ID_PERSONA = @id_persona;");
+                
+                await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@id_persona", persona.Id_Persona);
+                    cmd.Parameters.AddWithValue("@nombre", persona.Nombre);
+                    cmd.Parameters.AddWithValue("@apellidos", persona.Apellidos);
+                    cmd.Parameters.AddWithValue("@telefono", persona.Telefono);
+                    cmd.Parameters.AddWithValue("@fecha_nacimiento", persona.Fecha_Nacimiento);
+
+                    return (cmd.ExecuteNonQuery() > 0);
+                }
+                    
             }
         }
     }

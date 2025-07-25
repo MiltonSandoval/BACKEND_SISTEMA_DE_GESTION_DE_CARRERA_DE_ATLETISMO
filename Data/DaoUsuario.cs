@@ -1,4 +1,5 @@
 ﻿
+
 using System.Diagnostics.Contracts;
 using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Modelo;
 using MySql.Data.MySqlClient;
@@ -116,12 +117,12 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
             return null;
         }
 
-        static async Task<bool> CambiarContrasenaAsyn(int Correo, string nuevaContrasena, string contrasenaAntigua) 
+        public static async Task<bool> CambiarContrasenaAsyn(int Correo, string nuevaContrasena, string contrasenaAntigua) 
         {
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
             await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
             {
-                string query = "UPDATE USUARIO SET PASSWORD_USER = @nuevaContra WHERE EMAIL_USER = @correo and PASSWORD_USER = @contraAntigua";
+                string query = "UPDateTime USUARIO SET PASSWORD_USER = @nuevaContra WHERE EMAIL_USER = @correo and PASSWORD_USER = @contraAntigua";
 
                 await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
                 {
@@ -133,17 +134,36 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
                 }
             }
         }
-        static async Task<bool> CambiarEstadoAsyn(int idUsuario, bool nuevoEstado)
+        public static async Task<bool> CambiarEstadoAsyn(int idUsuario)
         {
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
             await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
             {
-                string query = "UPDATE USUARIO SET ESTADO = @nuevoEstado WHERE ID_USER = @idUsuario";
+                string query = "UPDateTime USUARIO SET ESTADO = NOT ESTADO WHERE ID_USER = @idUsuario";
 
                 await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
                 {
-                    cmd.Parameters.AddWithValue("@nuevoEstado", nuevoEstado);
                     cmd.Parameters.AddWithValue("@idUsuario", idUsuario);
+
+                    return (cmd.ExecuteNonQuery() > 0);
+                }
+            }
+        }
+
+        public static async Task<bool> ActualizarUsuario(Usuario usuario)
+        {
+            DbConnectionFactory dbConnFactory = new DbConnectionFactory();
+
+            await using(MySqlConnection conexion = dbConnFactory.CrearConexion())
+            {
+                string query = "UPDateTime USUARIO SET EMAIL_USER = @correo, PASSWORD_USER = @contra, ESTADO = @estado WHERE ID_USER = @idUsuario";
+
+                await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@correo", usuario.Email);
+                    cmd.Parameters.AddWithValue("@contra", usuario.Password);
+                    cmd.Parameters.AddWithValue("@estado", usuario.Estado);
+                    cmd.Parameters.AddWithValue("@idUsuario", usuario.Id_User);
 
                     return (cmd.ExecuteNonQuery() > 0);
                 }

@@ -1,11 +1,7 @@
 ﻿using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Services;
 using Microsoft.AspNetCore.Mvc;
-using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO;
-using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data;
 using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.DTO;
-using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Mapper;
-using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Modelo;
-
+using MySql.Data.MySqlClient;
 
 namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Controllers
 {
@@ -39,7 +35,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Controllers
             try
             {
                 DtoPerfilUsuario competidor = await _servCompetidor.RegistrarCompetidor(dtoRegistroUsuario);
-                if (competidor != null)
+                if (!(competidor is null))
                 {
                     return Ok(competidor);
                 }
@@ -54,18 +50,72 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Controllers
             }
         }
 
-        [HttpGet("Buscar/{id_user}/{id_persona}/")]
-        public IActionResult Get(int id_persona, int Id_user)
+        [HttpGet("Login")]
+        public async Task<ActionResult<DtoPerfilUsuario>> Get(string Email, string Password)
         {
-            // Aquí podrías buscar el competidor por ID en una base de datos o lista
-            return Ok($"Detalles del competidor con ID: {id_persona}");
-        }
-        //[HttpPost("Registrar")]
-        //public IActionResult Post([FromBody] string competidor)
-        //{
-        //    // Aquí podrías agregar el competidor a una base de datos o lista
-        //    //return CreatedAtAction(nameof(Get), new { id = 1 }, competidor);
-        //}
+            try
+            {
 
+                DtoPerfilUsuario competidor = await _servCompetidor.LoginCompetidor(Email, Password);
+                return Ok(competidor);
+            }
+            catch
+            {
+                return NotFound(new
+                {
+                    mensaje = "Credenciales incorrectas o competidor no encontrado."
+                });
+            }
+        }
+
+        [HttpPatch("ActualizarEstadoCompetidor/{id}")]
+        public async Task<ActionResult<DtoPerfilUsuario>> ActualizarEstadoCompetidor(int id)
+        {
+            try
+            {
+                DtoPerfilUsuario NuevoEstado = await _servCompetidor.ActualizarEstadoCompetidor(id);
+                return Ok(NuevoEstado);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+        [HttpPut("ActualizarPerfilCompetidor/")]
+        public async Task<ActionResult<DtoPerfilUsuario>> ActualizarPerfilCompetidor([FromBody] DtoPerfilUsuario dtoPerfilUsuario)
+        {
+            try
+            {
+                DtoPerfilUsuario competidor = await _servCompetidor.ActualizarPerfilCompetidor(dtoPerfilUsuario);
+                return Ok(competidor);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+        [HttpPost("SolicitarUnirseClub/")]
+        public async Task<ActionResult<string>> PostSolicitarUnirse(int id_club, int id_competidor)
+        {
+            try
+            {
+                bool Solicitud = await _servCompetidor.SolicitarUnirseClub(id_club, id_competidor);
+                if (Solicitud)
+                    return Ok(new { mensaje = "Solicitud enviada" });
+                return NotFound(new { mensaje = "Error al solicitar unirse al club, asegurate de no inscrito en uno." });
+            }
+            catch (MySqlException ex)
+            {
+                return BadRequest($"Error en la base de datos:{ex.Message}");
+            }
+            catch (Exception ex2)
+            {
+                return ("Error interno, verificar que los datos ingresados sean los correctos");
+            }
+
+
+
+        }
     }
 }
+
