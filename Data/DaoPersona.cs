@@ -68,7 +68,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
             DbConnectionFactory dbConnFactory = new DbConnectionFactory();
             await using (MySqlConnection conexion = dbConnFactory.CrearConexion())
             {
-                string query = ("UPDateTime Persona \r\n SET Nombre = @nombre, Apellidos = @apellidos, Telefono = @telefono, FECHA_NACIMIENTO = @fecha_nacimiento \r\nWHERE ID_PERSONA = @id_persona;");
+                string query = ("UPDate Persona \r\n SET Nombre = @nombre, Apellidos = @apellidos, Telefono = @telefono, FECHA_NACIMIENTO = @fecha_nacimiento \r\nWHERE ID_PERSONA = @id_persona;");
                 
                 await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
                 {

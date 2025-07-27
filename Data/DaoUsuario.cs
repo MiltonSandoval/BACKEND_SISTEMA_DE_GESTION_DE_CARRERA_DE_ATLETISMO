@@ -117,19 +117,18 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
             return null;
         }
 
-        public static async Task<bool> CambiarContrasenaAsyn(int Correo, string nuevaContrasena, string contrasenaAntigua) 
+        public static async Task<bool> CambiarContrasenaAsyn(int idUsuario, string nuevaContrasena, string contrasenaAntigua)
         {
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
             await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
             {
-                string query = "UPDateTime USUARIO SET PASSWORD_USER = @nuevaContra WHERE EMAIL_USER = @correo and PASSWORD_USER = @contraAntigua";
-
+                // CAMBIAR "UPDateTime" por "UPDATE" y corregir parámetros
+                string query = "UPDATE USUARIO SET PASSWORD_USER = @nuevaContra WHERE ID_USER = @idUsuario AND PASSWORD_USER = @contraAntigua";
                 await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
                 {
                     cmd.Parameters.AddWithValue("@nuevaContra", nuevaContrasena);
-                    cmd.Parameters.AddWithValue("@correo", Correo);
+                    cmd.Parameters.AddWithValue("@idUsuario", idUsuario); // Cambié de @correo a @idUsuario
                     cmd.Parameters.AddWithValue("@contraAntigua", contrasenaAntigua);
-
                     return (cmd.ExecuteNonQuery() > 0);
                 }
             }
@@ -139,7 +138,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
             await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
             {
-                string query = "UPDateTime USUARIO SET ESTADO = NOT ESTADO WHERE ID_USER = @idUsuario";
+                string query = "UPDate USUARIO SET ESTADO = NOT ESTADO WHERE ID_USER = @idUsuario";
 
                 await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
                 {
@@ -156,7 +155,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
 
             await using(MySqlConnection conexion = dbConnFactory.CrearConexion())
             {
-                string query = "UPDateTime USUARIO SET EMAIL_USER = @correo, PASSWORD_USER = @contra, ESTADO = @estado WHERE ID_USER = @idUsuario";
+                string query = "UPDate USUARIO SET EMAIL_USER = @correo, PASSWORD_USER = @contra, ESTADO = @estado WHERE ID_USER = @idUsuario";
 
                 await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
                 {

@@ -1,6 +1,8 @@
 
+using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.DAO;
 using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data;
 using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Services;
+using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Servicio;
 
 namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO
 {
@@ -20,7 +22,12 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO
             builder.Services.AddScoped<DaoCompetidor>();
             builder.Services.AddScoped<DbConnectionFactory>();
             builder.Services.AddScoped<SerClub>();
-
+            builder.Services.AddScoped<ServOrganizador>();
+            builder.Services.AddScoped<DaoOrganizador>();
+            builder.Services.AddScoped<DaoCarrera>();
+            builder.Services.AddScoped<DaoResultadoCarrera>();
+            builder.Services.AddScoped<DaoAdministrador>();
+            builder.Services.AddScoped<ServAdministrador>();
 
             var app = builder.Build();
 
