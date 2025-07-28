@@ -85,25 +85,9 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
-        [HttpPut("cambiar-estado/{id}")]
-        public async Task<IActionResult> CambiarEstado(int id)
-        {
-            try
-            {
-                var resultado = await _servAdministrador.CambiarEstadoAdministrador(id);
-                if (!resultado)
-                {
-                    return NotFound(new { mensaje = "Administrador no encontrado" });
-                }
-                return Ok(new { mensaje = "Estado cambiado exitosamente" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { mensaje = ex.Message });
-            }
-        }
+
         [HttpGet("estadisticas")]
-        public async Task<IActionResult> ObtenerEstadisticas()
+        public async Task<ActionResult<DtoEstadisticasAdministrador>> ObtenerEstadisticas()
         {
             try
             {

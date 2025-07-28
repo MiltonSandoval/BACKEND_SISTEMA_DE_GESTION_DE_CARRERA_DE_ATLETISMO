@@ -2,6 +2,7 @@
 using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.DTO;
 using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.DAO;
 using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data;
+using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Mapper;
 namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Servicio
 {
     public class ServAdministrador
@@ -93,13 +94,13 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Servicio
         // Implementaciones básicas para otros métodos
         public async Task<DtoPerfilAdministrador?> LoginAdministrador(string email, string password)
         {
-            // Implementación básica por ahora
-            return null;
+            DtoPerfilAdministrador administrador = DaoAdministrador.ObtenerAdministradorPorCorreoYContra(email, password).Result;
+            return administrador;
         }
         public async Task<List<DtoPerfilAdministrador>> ListarAdministradores()
         {
-            // Implementación básica por ahora
-            return new List<DtoPerfilAdministrador>();
+            List<DtoPerfilAdministrador> Administradores = DaoAdministrador.ObtenerAdministradoresAsync().Result;
+            return Administradores;
         }
         public async Task<bool> CambiarEstadoAdministrador(int idAdministrador)
         {
@@ -109,25 +110,36 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Servicio
         public async Task<DtoEstadisticasAdministrador> ObtenerEstadisticas()
         {
             // Implementación básica por ahora
-            return new DtoEstadisticasAdministrador
-            {
-                TotalUsuarios = 0,
-                TotalCompetidores = 0,
-                TotalOrganizadores = 0,
-                TotalCarreras = 0,
-                TotalClubes = 0,
-                IngresosTotales = 0
-            };
+            return DaoAdministrador.ObtenerEstadisticas().Result;
         }
         public async Task<DtoPerfilAdministrador?> ObtenerPerfilAdministrador(int idAdministrador)
         {
-            // Implementación básica por ahora
-            return null;
+            DtoPerfilAdministrador Administrador = DaoAdministrador.ObtenerAdministradorPorId(idAdministrador).Result;
+
+            return Administrador;
         }
         public async Task<DtoPerfilAdministrador> ActualizarPerfilAdministrador(DtoPerfilAdministrador dto)
         {
-            // Implementación básica por ahora
-            return dto;
+            try
+            {
+
+                Usuario user = MapPerfilAdministrador.ObtenerUsuarioDelDtoPerfilAdmin(dto);
+                user.Id_User = await DaoAdministrador.ObtenerIdUsuarioDeAdmin(dto.IdAdministrador);
+                Persona Peaople = MapPerfilAdministrador.ObtenerPersonaDelDtoAdmin(dto);
+                Peaople.Id_Persona = await DaoAdministrador.ObtenerIdPersonaDeAdmin(dto.IdAdministrador);
+
+                await DaoPersona.ActualizarPersona(Peaople);
+                await DaoUsuario.ActualizarUsuario(user);
+                DtoPerfilAdministrador AdminActualizado = DaoAdministrador.ObtenerAdministradorPorId(dto.IdAdministrador).Result;
+                return dto;
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
     }
 }

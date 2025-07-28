@@ -155,7 +155,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
 
             await using(MySqlConnection conexion = dbConnFactory.CrearConexion())
             {
-                string query = "UPDate USUARIO SET EMAIL_USER = @correo, PASSWORD_USER = @contra, ESTADO = @estado WHERE ID_USER = @idUsuario";
+                string query = "UPDATE USUARIO SET EMAIL_USER = @correo, PASSWORD_USER = @contra, ESTADO = @estado WHERE ID_USER = @idUsuario";
 
                 await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
                 {
