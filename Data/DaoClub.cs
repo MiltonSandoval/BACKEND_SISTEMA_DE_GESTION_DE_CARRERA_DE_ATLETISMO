@@ -120,7 +120,7 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
 
             await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
             {
-                string query = @"SELECT ID_CLUB FROM registro_historico where ID_COMPETIDOR = @id AND FECHA_SALIDA = null";
+                string query = @"SELECT ID_CLUB FROM registro_historico where ID_COMPETIDOR = @id AND FECHA_SALIDA is null";
                 await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
                 {
                     cmd.Parameters.AddWithValue("id", id);
@@ -165,5 +165,40 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data
                 }
             }
         }
+        public static async Task<bool> AceptarSolicitud(SolicitudesClub soli)
+        {
+            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
+            await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
+            {
+                string query = @"insert into registro_historico(ID_COMPETIDOR, ID_CLUB, FECHA_INGRESO) VALUES (@COMPE, @CLUB,@INGRESO);";
+                await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("COMPE", soli.id_competidor);
+                    cmd.Parameters.AddWithValue("CLUB", soli.id_club);
+                    cmd.Parameters.AddWithValue("INGRESO", new DateTime());
+
+                    return (cmd.ExecuteNonQuery() > 0);
+                }
+            }
+        }
+
+        public static async Task<bool> CambiarEstadoSolicitud(int id_soli, int estado)
+        {
+            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
+            await using (MySqlConnection conexion = dbConnectionFactory.CrearConexion())
+            {
+                string query = @"update solicitud_club set ID_ESTADO_APROBACION = @estado WHERE ID_ESTADO_SOLICITUD = @id";
+                await using (MySqlCommand cmd = new MySqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@estado", estado );
+                    cmd.Parameters.AddWithValue("@id", id_soli);
+                    return (cmd.ExecuteNonQuery() > 0);
+                }
+            }
+        }
+
+
+
+
     }
 }

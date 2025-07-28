@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.DTO;
 using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Modelo;
+using BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Data;
 
 namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Controllers
 
@@ -87,7 +88,9 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Controllers
             {
 
                 DtoPerfilClub ClubActual = await _servClub.ClubActual( id);
-                return Ok(ClubActual);
+                if (ClubActual != null)
+                    return Ok(ClubActual);
+                return BadRequest(new { mensaje = "No se a inscrito a un club" });
             }
             catch (Exception ex)
             {
@@ -109,6 +112,30 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Controllers
             catch
             {
                 return BadRequest();
+            }
+        }
+        [HttpPost("AceptarSolicitud/")]
+        public async Task<ActionResult<DtoPerfilClub>> PostAceptarClub(SolicitudesClub solicitud)
+        {
+            try
+            {
+                var club = _servClub.ClubActual(solicitud.id_competidor).Result;
+                if (club == null && club.)
+                {
+                    bool Solicitud = SerClub.aceptarSoli(solicitud).Result;
+                    if (Solicitud)
+                        return Ok(_servClub.ClubActual(solicitud.id_competidor).Result);
+                    return BadRequest("Error al unirse al club");
+                }
+                else
+                {
+                    return BadRequest("Error ya perteces a un club");
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message );
             }
         }
     }

@@ -59,19 +59,37 @@ namespace BACKEND_SISTEMA_DE_GESTION_DE_CARRERA_DE_ATLETISMO.Services
                 throw new ArgumentException($"Erro inesperado al obtener listado de clubes");
             }
         }
-        public async Task<DtoPerfilClub> ClubActual(int id)
+        public async Task<DtoPerfilClub> ClubActual(int id_compe)
         {
-            int idclub = DaoClub.ClubActualId(id).Result;
+            int idclub = DaoClub.ClubActualId(id_compe).Result;
             if (idclub != -1)
             {
                 return DaoClub.BuscarClubPorId(idclub).Result;
             }
-            throw new ArgumentException("No pertenece a ningun club");
+            return null;
         }
         public async Task<List<SolicitudesClub>> Solicitudes(int id_club)
         {
             List<SolicitudesClub> solicitudes = await DaoClub.SolicitudesSolicitadas(id_club);
             return solicitudes;
         }
+
+        public static async Task<bool> aceptarSoli(SolicitudesClub soli)
+        {
+            try
+            {
+                bool Insercion = DaoClub.AceptarSolicitud(soli).Result;
+                bool Actualizacion = DaoClub.CambiarEstadoSolicitud(soli.id_Solicitud, 2).Result;
+                if(Insercion = Actualizacion)
+                    return true;
+                return false;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }
+    
